@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true, // import * as ~  이런 식으로 하지 않아도 됨
+    "sourceMap": true, // 에러 났을 때 원래 에러난 위치 찾아가기 편함
+    "lib": ["ES2020", "DOM"], // 프로트용
+    "jsx": "react", // jsx는 react용으로 사용
+    "module": "esnext", // 최신 모듈( ex) import, export)을 사용하겠다는 의미 cf) commonjs
+    "moduleResolution": "Node", // 최신 문법을 node도 인식할 수 있도록
+    "target": "es5", // code를 ES2020으로 작성 하더라도 es5로 변환 하겠다.
+    "strict": true, // type check를 엄격하게 함
+    "resolveJsonModule": true, // import json 하는 걸 허가
+    "baseUrl": ".",
+    "paths": {
+      // import A from ../../../../ 이런 식으로 하는걸 방지
+      "@hooks/*": ["hooks/*"],
+      "@components/*": ["components/*"],
+      "@layouts/*": ["layouts/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
+      "@typings/*": ["typings/*"]
+    }
+  }
+}
