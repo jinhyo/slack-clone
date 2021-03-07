@@ -9,6 +9,7 @@
     "target": "es5", // code를 ES2020으로 작성 하더라도 es5로 변환 하겠다.
     "strict": true, // type check를 엄격하게 함
     "resolveJsonModule": true, // import json 하는 걸 허가
+
     "baseUrl": ".",
     "paths": {
       // import A from ../../../../ 이런 식으로 하는걸 방지
