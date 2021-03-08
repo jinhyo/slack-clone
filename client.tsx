@@ -2,7 +2,10 @@ import App from "@layouts/App";
 import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-// import { BrowserRouter } from 'react-router-dom';
+
+// axios.defaults.withCredentials = true;
+// axios.defaults.baseURL =
+//   process.env.NODE_ENV === "production" ? "https://sleact.nodebird.com" : "http://localhost:3095";
 
 render(
   <BrowserRouter>

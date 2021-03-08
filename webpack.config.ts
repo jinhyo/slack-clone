@@ -83,14 +83,15 @@ const config: webpack.Configuration = {
   devServer: {
     // hot reloading용 개발 서버
     historyApiFallback: true, // react router를 위해 필요
-    port: 3001,
+    port: 3090,
     publicPath: "/dist/",
-    // proxy: {
-    //   "/api/": {
-    //     target: "http://localhost:3095",
-    //     changeOrigin: true,
-    //   },
-    // },
+    proxy: {
+      // cors 에러를 프론트엔드에서 해결하는 방법
+      "/api/": {
+        target: "http://localhost:3095", // 앞에 /api/가 붙으면  보내는 주소를 백엔드와 동일(http://localhost:3095)한 주소로 바꿔서 보냄
+        changeOrigin: true,
+      },
+    },
   },
 };
 

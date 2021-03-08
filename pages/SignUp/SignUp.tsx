@@ -1,13 +1,13 @@
 import useInput from "@hooks/useInput";
-import fetcher from "@utils/fetcher";
+// import fetcher from "@utils/fetcher";
 import React, { useCallback, useState, VFC } from "react";
 import axios from "axios";
-import useSWR from "swr";
+// import useSWR from "swr";
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from "./styles";
 import { Link, Redirect } from "react-router-dom";
 
 const SignUp = () => {
-  const { data, error, revalidate } = useSWR("/api/users", fetcher);
+  // const { data, error, revalidate } = useSWR("/api/users", fetcher);
 
   const [email, onChangeEmail] = useInput("");
   const [nickname, onChangeNickname] = useInput("");
@@ -42,6 +42,8 @@ const SignUp = () => {
         setSignUpSuccess(false);
         axios
           .post("/api/users", {
+            // 앞에 /api/가 붙었기 때문에 proxy에서 보내는 주소를 백엔드와 동일(http://localhost:3095)한 주소로 바꿔서 보냄
+            // cors 에러가 프론트에서 해결됨
             email,
             nickname,
             password,
@@ -60,13 +62,13 @@ const SignUp = () => {
     [email, nickname, password, passwordCheck, mismatchError]
   );
 
-  if (data === undefined) {
-    return <div>로딩중...</div>;
-  }
+  // if (data === undefined) {
+  //   return <div>로딩중...</div>;
+  // }
 
-  if (data) {
-    return <Redirect to="/workspace/sleact/channel/일반" />;
-  }
+  // if (data) {
+  //   return <Redirect to="/workspace/sleact/channel/일반" />;
+  // }
 
   return (
     <div id="container">
