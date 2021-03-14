@@ -20,6 +20,7 @@ const LogIn = () => {
     dedupingInterval: 10000, // 캐시 유지시간 (10초)
     revalidateOnFocus: false, // 다른 탭에 갔다가 왔을 때 다시 요청하지 않음
   });
+  console.log("🚀 ~ file: Login.tsx ~ line 20 ~ LogIn ~ data", data);
   // data가 존재하지 않으면 로딩중
   // data나 error의 값이 바뀌면 자동적으로 리랜더링됨
 
@@ -53,8 +54,7 @@ const LogIn = () => {
   }
 
   if (data) {
-    console.log("data~~~~~~~");
-    return <Redirect to="/workspace/channel/일반" />;
+    return <Redirect to="/workspace/channel" />;
   } // return은 hooks보다 항상 아래에 있어야함
 
   // console.log(error, userData);
