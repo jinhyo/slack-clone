@@ -29,6 +29,10 @@ import Modal from "@components/Modal/Modal";
 import { toast } from "react-toastify";
 import { Input, Label, Button } from "@pages/SignUp/styles";
 import CreateChannelModal from "@components/CreateChannelModal/CreateChannelModal";
+import InviteWorkspaceModal from "@components/InviteWorkspaceModal/InviteWorkspaceModal";
+import InviteChannelModal from "@components/InviteChannelModal/InviteChannelModal";
+import ChannelList from "@components/ChannelList/ChannelList";
+import DMList from "@components/DMList/DMList";
 
 const Channel = loadable(() => import("@pages/Channel/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage/DirectMessage"));
@@ -188,8 +192,8 @@ const Workspace: VFC = () => {
                   <button onClick={onLogout}>로그아웃</button>
                 </WorkspaceModal>
               </Menu>
-              {/*    <ChannelList />
-          <DMList /> */}
+              <ChannelList />
+              <DMList />
             </MenuScroll>
           </Channels>
           <Chats>
@@ -220,16 +224,16 @@ const Workspace: VFC = () => {
         onCloseModal={onCloseModal}
         setShowCreateChannelModal={setShowCreateChannelModal}
       />
-      {/*  <InviteWorkspaceModal
-      show={showInviteWorkspaceModal}
-      onCloseModal={onCloseModal}
-      setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
-    />
-    <InviteChannelModal
-      show={showInviteChannelModal}
-      onCloseModal={onCloseModal}
-      setShowInviteChannelModal={setShowInviteChannelModal}
-    /> */}
+      <InviteWorkspaceModal
+        show={showInviteWorkspaceModal}
+        onCloseModal={onCloseModal}
+        setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
+      />
+      <InviteChannelModal
+        show={showInviteChannelModal}
+        onCloseModal={onCloseModal}
+        setShowInviteChannelModal={setShowInviteChannelModal}
+      />
     </div>
   );
 };
