@@ -54,7 +54,7 @@ const LogIn = () => {
   }
 
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/sleact/channel/일반" />;
   } // return은 hooks보다 항상 아래에 있어야함
 
   // console.log(error, userData);

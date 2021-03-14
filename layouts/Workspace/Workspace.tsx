@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useState, VFC } from "react";
 import axios from "axios";
-import userSWR from "swr";
+import useSWR from "swr";
 import {
   AddButton,
   Channels,
@@ -18,12 +18,12 @@ import {
   WorkspaceWrapper,
 } from "@layouts/Workspace/styles";
 import fetcher from "@utils/fetcher";
-import { Redirect, Route, Switch } from "react-router";
+import { Redirect, Route, Switch, useParams } from "react-router";
 import gravatar from "gravatar";
 import loadable from "@loadable/component";
 import Menu from "@components/Menu/Menu";
 import { Link } from "react-router-dom";
-import { IUser, IWorkspace } from "@typings/db";
+import { IChannel, IUser, IWorkspace } from "@typings/db";
 import useInput from "@hooks/useInput";
 import Modal from "@components/Modal/Modal";
 import { toast } from "react-toastify";
@@ -34,10 +34,16 @@ const Channel = loadable(() => import("@pages/Channel/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage/DirectMessage"));
 
 const Workspace: VFC = () => {
-  const { data: userData, error, revalidate, mutate } = userSWR<IUser | false>(
+  const { data: userData, error, revalidate, mutate } = useSWR<IUser | false>(
     "/api/users",
     fetcher
   );
+  const { workspace } = useParams<{ workspace: string }>();
+  const { data: channelData } = useSWR<IChannel[]>(
+    userData ? `/api/workspaces/${workspace}/channels` : null,
+    fetcher
+  );
+  console.log("🚀 ~ file: Workspace.tsx ~ line 43 ~ channelData", channelData);
 
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
@@ -188,8 +194,8 @@ const Workspace: VFC = () => {
           </Channels>
           <Chats>
             <Switch>
-              <Route path="/workspace/channel" component={Channel} />
-              <Route path="/workspace/dm/:id" component={DirectMessage} />
+              <Route path="/workspace/:workspace/channel/:channel" component={Channel} />
+              <Route path="/workspace/:workspace/dm/:id" component={DirectMessage} />
               {/* api의 시작이 /workspace여야지 적용됨 : nested route*/}
             </Switch>
           </Chats>
