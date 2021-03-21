@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useState, VFC } from "react";
+import React, { FC, useCallback, useEffect, useState, VFC } from "react";
 import axios from "axios";
 import useSWR from "swr";
 import {
@@ -33,6 +33,7 @@ import InviteWorkspaceModal from "@components/InviteWorkspaceModal/InviteWorkspa
 import InviteChannelModal from "@components/InviteChannelModal/InviteChannelModal";
 import ChannelList from "@components/ChannelList/ChannelList";
 import DMList from "@components/DMList/DMList";
+import useSocket from "@hooks/useSocket";
 
 const Channel = loadable(() => import("@pages/Channel/Channel"));
 const DirectMessage = loadable(() => import("@pages/DirectMessage/DirectMessage"));
@@ -57,6 +58,19 @@ const Workspace: VFC = () => {
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkpsace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
+  const [socket, disconnect] = useSocket(workspace);
+
+  useEffect(() => {
+    if (channelData && userData && socket) {
+      console.log(socket);
+      socket.emit("login", { id: userData.id, channels: channelData.map((v) => v.id) });
+    }
+  }, [socket, channelData, userData]);
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [workspace, disconnect]);
 
   const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);

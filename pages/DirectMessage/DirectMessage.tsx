@@ -12,6 +12,8 @@ import { Header } from "@pages/SignUp/styles";
 import ChatBox from "@components/ChatBox/ChatBox";
 import ChatList from "@components/ChatList/ChatList";
 import Scrollbars from "react-custom-scrollbars";
+import useSocket from "@hooks/useSocket";
+import makeSection from "@utils/makeSection";
 
 const DireactMessage = () => {
   const { workspace, id } = useParams<{ workspace: string; id: string }>();
@@ -20,11 +22,14 @@ const DireactMessage = () => {
   const { data: chatData, mutate: mutateChat, revalidate, setSize } = useSWRInfinite<IDM[]>(
     (index) => `/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${index + 1}`,
     fetcher
-  );
-  console.log("🚀 ~ file: DirectMessage.tsx ~ line 21 ~ DireactMessage ~ chatData", chatData);
-
+  ); // useSWRInfinite 은 결과값을 2차원 배열로 가지고옴
+  const [socket] = useSocket(workspace);
   const [chat, onChangeChat, setChat] = useInput("");
-  // const scrollbarRef = useRef<Scrollbars>(null);
+  const scrollbarRef = useRef<Scrollbars>(null);
+
+  const isEmpty = chatData?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
 
   const onSubmitForm = useCallback(
     (e) => {
@@ -45,7 +50,7 @@ const DireactMessage = () => {
           return prevChatData;
         }, false).then(() => {
           setChat("");
-          // scrollbarRef.current?.scrollToBottom();
+          scrollbarRef.current?.scrollToBottom();
         });
         axios
           .post(`/api/workspaces/${workspace}/dms/${id}/chats`, {
@@ -60,9 +65,47 @@ const DireactMessage = () => {
     [chat, chatData, , myData, userData, workspace, id]
   );
 
+  const onMessage = useCallback((data: IDM) => {
+    // id는 상대방 아이디
+    if (data.SenderId === Number(id) && myData.id !== Number(id)) {
+      mutateChat((chatData) => {
+        chatData?.[0].unshift(data);
+        return chatData;
+      }, false).then(() => {
+        if (scrollbarRef.current) {
+          if (
+            scrollbarRef.current.getScrollHeight() <
+            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+          ) {
+            console.log("scrollToBottom!", scrollbarRef.current?.getValues());
+            setTimeout(() => {
+              scrollbarRef.current?.scrollToBottom();
+            }, 50);
+          }
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    socket?.on("dm", onMessage);
+    return () => {
+      socket?.off("dm", onMessage);
+    };
+  }, [socket, onMessage]);
+
+  // 로딩 시 스크롤바 제일 아래로
+  useEffect(() => {
+    if (chatData?.length === 1) {
+      scrollbarRef.current?.scrollToBottom();
+    }
+  }, [chatData]);
+
   if (!userData || !myData) {
     return null;
   }
+
+  const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
 
   return (
     <Container>
@@ -73,12 +116,12 @@ const DireactMessage = () => {
         />
         <span>{userData.nickname}</span>
       </Header>
-      {/* <ChatList
+      <ChatList
         chatSections={chatSections}
         scrollRef={scrollbarRef}
         setSize={setSize}
         isReachingEnd={isReachingEnd}
-      /> */}
+      />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitForm={onSubmitForm} />
     </Container>
   );

@@ -40,7 +40,8 @@ const LogIn = () => {
           }
         )
         .then(({ data }) => {
-          mutate(data, false); // Optimistic UI
+          revalidate();
+          // mutate(data, false); // Optimistic UI
         })
         .catch((error) => {
           setLogInError(error.response?.data?.statusCode === 401);
