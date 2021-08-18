@@ -2,7 +2,7 @@ import path from "path";
 import webpack from "webpack";
 import ForkTsCheckerWebpackPlugin from "fork-ts-checker-webpack-plugin";
 import ReactRefreshWebpackPlugin from "@pmmmwh/react-refresh-webpack-plugin";
-// import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -98,11 +98,13 @@ const config: webpack.Configuration = {
 if (isDevelopment && config.plugins) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin()); // hot reloading용
   config.plugins.push(new ReactRefreshWebpackPlugin()); // hot reloading용
-  //   config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: "server", openAnalyzer: true }));
 }
-// if (!isDevelopment && config.plugins) {
-//   config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
-//   config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
-// }
+if (!isDevelopment && config.plugins) {
+  config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true })); // 요즘은 별 영향이 없지만
+  // 사용 했을 때 좀 더 최적화가 되는 옛날 플러그인들이 있음
+
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: "static" }));
+}
 
 export default config;
